@@ -11,6 +11,11 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import Perceptron
 from sklearn.svm import SVC
+import re
+
+def sanitize_filename(value):
+    """Replace invalid characters in a filename with underscores."""
+    return re.sub(r'[\\/*?:"<>|]', '_', value)
 
 # Initialize session state variables
 if 'trained_model' not in st.session_state:
@@ -74,12 +79,16 @@ model_type = st.sidebar.selectbox(
 # Sidebar for cross-validation selection
 cv_type = st.sidebar.selectbox(
     'Select Cross-Validation Method',
-    ('Train/Test Split', 'K-Fold Cross-Validation', 'Leave-One-Out Cross-Validation (LOOCV)')
+    ('Train/Test Split', 'K-Fold Cross-Validation')
 )
 
 # Number of folds for K-Fold (only applicable if K-Fold is selected)
 if cv_type == 'K-Fold Cross-Validation':
     k_folds = st.sidebar.slider('Select number of folds for K-Fold', min_value=2, max_value=10, value=5)
+
+# Sidebar for Test Size
+if cv_type == 'Train/Test Split':
+    test_size = st.sidebar.slider('Test Size', min_value=0.1, max_value=0.5, value=0.2, step=0.01)
 
 # Use session state to manage datasets
 if 'original_data' not in st.session_state:
@@ -147,7 +156,7 @@ with col3:
 
         # Train/Test Split
         if cv_type == 'Train/Test Split':
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
             model.fit(X_train, y_train)
             predictions = model.predict(X_test)
             accuracy = accuracy_score(y_test, predictions)
@@ -177,12 +186,15 @@ with col3:
         st.session_state.log_loss_value = log_loss_value
         st.session_state.report_df = report_df
 
-        st.sidebar.success(f"Model trained successfully using {cv_type}!")
+        st.sidebar.success(f"Model trained successfully!")
+        st.sidebar.success(f"Model Type: {st.session_state.model_type}")
+        st.sidebar.success(f"Cross-Validation Method: {cv_type}")
 
 # Display training results if available in session state
 if st.session_state.trained_model:
     st.subheader('Model Training Results')
     st.write('Model:', st.session_state.model_type)
+    st.write('Cross-Validation Method:', cv_type)  # Added Cross-Validation Method
     st.write('Classification Accuracy:', st.session_state.model_accuracy * 100, '%')
     st.write('Log Loss:', st.session_state.log_loss_value)
     if st.session_state.report_df is not None:
@@ -192,8 +204,22 @@ if st.session_state.trained_model:
 with col4:
     if st.session_state.trained_model and st.button('Save Model'):
         os.makedirs(save_model_path, exist_ok=True)
-        model_file = f"{st.session_state.model_type.replace(' ', '_')}_{round(st.session_state.model_accuracy * 100, 2)}.pkl"
+        
+        # Sanitize cv_type to ensure it's safe for file names
+        sanitized_cv_type = sanitize_filename(cv_type)
+        
+        # Create the model filename with the validation method
+        model_file = (
+            f"{st.session_state.model_type.replace(' ', '_')}_"
+            f"{sanitized_cv_type.replace(' ', '_')}_"
+            f"{round(st.session_state.model_accuracy * 100, 2)}.pkl"
+        )
         model_path = os.path.join(save_model_path, model_file)
+        
+        # Save the model as a pickle file
         with open(model_path, 'wb') as f:
             pickle.dump(st.session_state.trained_model, f)
+        
         st.sidebar.success(f"Model saved as `{model_file}`!")
+
+
