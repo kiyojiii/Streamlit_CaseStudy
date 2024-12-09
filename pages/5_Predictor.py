@@ -27,21 +27,44 @@ def main():
 
             # Input fields for user data
             st.subheader("Input Features")
-            age = st.number_input("Age", min_value=1, max_value=120, step=1)
-            gender = st.selectbox("Gender", ["Male", "Female"])
-            smoking = st.selectbox("Do you smoke?", ["Yes", "No"])
-            yellow_fingers = st.selectbox("Do you have yellow fingers?", ["Yes", "No"])
-            anxiety = st.selectbox("Do you have anxiety?", ["Yes", "No"])
-            peer_pressure = st.selectbox("Are you under peer pressure?", ["Yes", "No"])
-            chronic_disease = st.selectbox("Do you have a chronic disease?", ["Yes", "No"])
-            fatigue = st.selectbox("Do you experience fatigue?", ["Yes", "No"])
-            allergy = st.selectbox("Do you have allergies?", ["Yes", "No"])
-            wheezing = st.selectbox("Do you experience wheezing?", ["Yes", "No"])
-            alcohol_consuming = st.selectbox("Do you consume alcohol?", ["Yes", "No"])
-            coughing = st.selectbox("Do you experience coughing?", ["Yes", "No"])
-            shortness_of_breath = st.selectbox("Do you experience shortness of breath?", ["Yes", "No"])
-            swallowing_difficulty = st.selectbox("Do you have difficulty swallowing?", ["Yes", "No"])
-            chest_pain = st.selectbox("Do you experience chest pain?", ["Yes", "No"])
+
+            # Personal Information
+            st.markdown("### Personal Information")
+            col1, col2, col3, col4 = st.columns(4)
+
+            with col1:
+                age = st.number_input("Age", min_value=1, max_value=120, step=1)
+
+            # Leave col2 blank (no content added here)
+
+            with col3:
+                gender = st.selectbox("Gender", ["Male", "Female"])
+
+
+            # Lifestyle Factors
+            st.markdown("### Lifestyle Factors")
+            col3, col4 = st.columns(2)
+            with col3:
+                smoking = st.radio("Do you smoke?", ["Yes", "No"], horizontal=True)
+                alcohol_consuming = st.radio("Do you consume alcohol?", ["Yes", "No"], horizontal=True)
+            with col4:
+                peer_pressure = st.radio("Are you under peer pressure?", ["Yes", "No"], horizontal=True)
+                allergy = st.radio("Do you have allergies?", ["Yes", "No"], horizontal=True)
+
+            # Symptoms
+            st.markdown("### Symptoms")
+            col5, col6 = st.columns(2)
+            with col5:
+                anxiety = st.radio("Do you have anxiety?", ["Yes", "No"], horizontal=True)
+                yellow_fingers = st.radio("Do you have yellow fingers?", ["Yes", "No"], horizontal=True)
+                fatigue = st.radio("Do you experience fatigue?", ["Yes", "No"], horizontal=True)
+                coughing = st.radio("Do you experience coughing?", ["Yes", "No"], horizontal=True)
+                shortness_of_breath = st.radio("Do you experience shortness of breath?", ["Yes", "No"], horizontal=True)
+            with col6:
+                chronic_disease = st.radio("Do you have a chronic disease?", ["Yes", "No"], horizontal=True)
+                wheezing = st.radio("Do you experience wheezing?", ["Yes", "No"], horizontal=True)
+                swallowing_difficulty = st.radio("Do you have difficulty swallowing?", ["Yes", "No"], horizontal=True)
+                chest_pain = st.radio("Do you experience chest pain?", ["Yes", "No"], horizontal=True)
 
             # Map inputs to model-compatible format
             input_data = pd.DataFrame({

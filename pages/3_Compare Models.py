@@ -17,7 +17,7 @@ from joblib import Parallel, delayed
 import numpy as np
 from sklearn.model_selection import LeaveOneOut
 
-@st.cache(allow_output_mutation=True)
+@st.cache_data
 def load_data():
     file_path = 'C:\\Users\\user\\Desktop\\jeah\\ITD105\\CaseStudy\\csv\\survey lung cancer.csv'
     return pd.read_csv(file_path)

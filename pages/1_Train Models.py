@@ -62,7 +62,7 @@ def preprocess_data(data):
 data = load_data()
 
 # Display application title
-st.title("Lung Cancer Prediction Tool")
+st.title("Classification Train Model")
 st.write('Data Loaded Successfully!')
 
 # Display file path

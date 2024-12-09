@@ -21,7 +21,9 @@ def load_data():
 
 # Clean data
 def clean_data(data):
-    return data.dropna()
+    # Drop rows with blank or missing values across all columns
+    data = data.dropna(subset=data.columns)
+    return data
 
 # Preprocess data
 def preprocess_data(data):
