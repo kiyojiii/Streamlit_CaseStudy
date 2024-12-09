@@ -2,13 +2,49 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+import base64
 
 #######################################
 # PAGE SETUP
 #######################################
 
 st.set_page_config(page_title="Lung Cancer Dashboard", page_icon=":bar_chart:", layout="wide")
-st.title("Lung Cancer Data Dashboard")
+
+# Path to your logo file
+logo_path = "C:/Users/user/Desktop/jeah/ITD105/CaseStudy/logo/logo.png"
+
+# Function to load and encode the image in base64
+def get_base64_image(image_path):
+    with open(image_path, "rb") as image_file:
+        encoded = base64.b64encode(image_file.read()).decode()
+    return encoded
+
+# Encode the logo image
+encoded_logo = get_base64_image(logo_path)
+
+# Display the logo with a larger size and round border in the sidebar
+with st.sidebar:
+    st.markdown(
+        f"""
+        <style>
+        .logo {{
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 250px; /* Adjusted size for a larger logo */
+            height: 250px; /* Ensure the height matches the width for circular shape */
+            border-radius: 50%; /* Makes the logo round */
+            border: 2px solid #ccc; /* Optional border around the logo */
+        }}
+        </style>
+        <img src="data:image/png;base64,{encoded_logo}" class="logo" />
+        """,
+        unsafe_allow_html=True,
+    )
+
+# Main content area (replace with your existing content)
+st.title("Welcome to the Data Dashboard")
+st.write("Explore the csv file lung cancer-related data and insights.")
 
 #######################################
 # DATA LOADING
